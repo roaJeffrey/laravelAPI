@@ -39,20 +39,19 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        try{
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|confirmed|min:6',
         ]);
 
-        try{
-            $request['role'] = '1';
-            $this->model->create($request->all());
-
+            return response()->json($user, 201);
             return response(['message' => "Succesfully created"], 201);
 
-        }catch(\Exception $e){
-            return response(['message' => $e->getMessage()], 400);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => false,'message' => $e->getMessage()], 500); 
+            return response("Error");
         }
     }
 }
